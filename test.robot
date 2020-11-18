@@ -1,5 +1,7 @@
 *** Settings ***
 Library  Selenium2Library
+Library    CSVLibrary.py
+Resource    variables.txt
 Suite Setup        Open Browser    ${URL}   ${BROWSER}
 Suite Teardown    Close all browsers
 
@@ -7,24 +9,26 @@ Suite Teardown    Close all browsers
 *** Variables ***
 ${URL}              https://www.aihitdata.com/
 ${BROWSER}          Chrome
-${email}            annahmyria94@gmail.com
-${temporary}
+${Company}          mortgage
+${Location}         us
+
 
 *** Test Cases ***
 Init
+    log to console  \n${USERNAME}
     Maximize Browser Window
     Wait Until Element Is Visible  //h1[@class='text-center']
     Click Element                   xpath=//a[contains(text(),'LOG IN')]
-    Input Text                      id=email  ${email}
-    Input Password                  id=password  qwerty456
+    Input Text                      id=email  ${USERNAME}
+    Input Password                  id=password  ${PASSWORD}
     Click Element                   id=submit
-    Input Text                      id=company  mortgage
-    Input Text                      id=location  us
+    Input Text                      id=company  ${Company}
+    Input Text                      id=location  ${Location}
     Click Button                    xpath=//button[contains(text(),'Search')]
-    Wait Until Element Is Visible  //div[@class='panel panel-default']//div[@class='panel-body']//div//a
+    #Wait Until Element Is Visible  //div[@class='panel panel-default']//div[@class='panel-body']//div//a
 
 Companies loop
-    log to console  \nName;Website;Address;Email;Phone
+    ${csv_file}=    CREATE CSV FILE    output.csv
     FOR    ${i}    IN RANGE    1    31
         ${href}     Get Element Attribute   //div[@class='panel panel-default'][${i}]//div[@class='panel-body']//div//a  href
         Execute Javascript  window.open('${href}', '_blank')
@@ -67,7 +71,10 @@ Companies loop
         #log to console  \ntest
         #${text}=    Run Keyword If  '${flag}'=='True'   Set Variable   '${mail.text}'
         #...     ELSE    Set Variable    ${EMPTY}
-        log to console  \n${name_text};${web_text};${address_text};${mail_text};${phone_text}
+        #log to console  \n${name_text};${web_text};${address_text};${mail_text};${phone_text}
         close window
         Select Window       title=${title_var}[0]
+        ${list}=    Create List     ${name_text}    ${web_text}     ${address_text}     ${mail_text}    ${phone_text}
+        #log to console  ${list}
+        write to csv file   ${csv_file}     ${list}
     END
