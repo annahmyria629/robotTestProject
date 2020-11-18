@@ -12,6 +12,7 @@ ${temporary}
 
 *** Test Cases ***
 Init
+    Maximize Browser Window
     Wait Until Element Is Visible  //h1[@class='text-center']
     Click Element                   xpath=//a[contains(text(),'LOG IN')]
     Input Text                      id=email  ${email}
@@ -24,7 +25,7 @@ Init
 
 Companies loop
     log to console  \nName;Website;Address;Email;Phone
-    FOR    ${i}    IN RANGE    1    2
+    FOR    ${i}    IN RANGE    1    31
         ${href}     Get Element Attribute   //div[@class='panel panel-default'][${i}]//div[@class='panel-body']//div//a  href
         Execute Javascript  window.open('${href}', '_blank')
         ${title_var}        Get Window Titles
