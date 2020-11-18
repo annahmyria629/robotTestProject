@@ -1,5 +1,5 @@
 *** Settings ***
-Library  Selenium2Library
+Library  Selenium2Library   run_on_failure=Nothing
 Library    CSVLibrary.py
 Resource    variables.txt
 Suite Setup        Open Browser    ${URL}   ${BROWSER}
